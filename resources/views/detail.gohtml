@@ -1,0 +1,122 @@
+{{define "title"}}
+  {{.Title}}-
+{{end}}
+
+{{define "keywords"}}
+    {{.KeyWords}}-{{.Author}}-
+{{end}}
+
+{{define "description"}}
+  {{.Desc}}-
+{{end}}
+
+{{define "hscripts"}}
+{{end}}
+
+{{define "main"}}
+  <header class="ui-header">
+    <div class="ui-icon-left">
+      <a href="javascript:history.back(-1)" class="ui-icon icon-back"></a>
+    </div>
+    <h1 class="ui-title">{{.Title}}</h1>
+  </header>
+  <div class="weui-content">
+    <div class="page-cells">
+      <div class="weui-panel__list">
+        <div class="weui-media-box_appmsg">
+          <div class="weui-media-box__hd">
+            <img class="weui-media-box__thumb" src="{{.Cover}}" alt="{{.Title}}">
+          </div>
+          <div class="weui-media-box__bd">
+            <h4 class="weui-media-box__title">{{.Title}}</h4>
+            <div class="weui-media-status">
+              <span class="btn-updating">{{.Status}}</span>
+              <span class="btn-caty"></span>
+            </div>
+            <div class="weui-media-box__ft">
+              <span class="box-cate">{{.TotalWords}}字 | 总点击：{{.Views}}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="media-group-button">
+        <a href="/chapter/{{.ID}}" class="weui-btn weui-btn_plain-addJ" id="showToast" style="float:left;>">目录</a>
+        <a href="/read/{{.FchpId}}" class="weui-btn weui-btn_plain-addJ" style="">开始阅读</a>
+      </div>
+      <div class="media-chapter" id="introdiv">
+        {{.Desc}}
+        <!--<a href="#" onclick="changeIntro(1);return false;"><img src="{{"static/images/down.png"|Asset}}" style="height:10px" alt=""/></a>-->
+      </div>
+      <input type="hidden" id="intro_origin" value="XXXXXX"/>
+      <input type="hidden" id="intro_s" value="XXXXXX"/>
+      <a href="/read/{{.LchpId}}" class="book-mulu">
+        <div class="hd">目录</div>
+        <div class="bd">
+          <p>{{.LchpTitle}}</p>
+        </div>
+        <div class="ft">{{.LchpUpdatedAt}}</div>
+      </a>
+    </div>
+
+    <!--评论-->
+    <div class="page-cells">
+      <div class="page-header">
+        <div class="page-tit">评论 <span class="sm">({{.CommentNum}} 条评论)</span></div>
+        <div class="page-right">
+          <a href="" class="btn-links">我要评论</a>
+        </div>
+      </div>
+      {{if eq .CommentNum 0}}
+      <div class="weui-empty">
+        <img src="{{"images/nomsg.png"|Asset}}" alt=""/>
+        <p>还没有人评价，抢个沙发吧</p>
+      </div>
+      {{end}}
+
+      <div class="weui-comment">
+        <ul class="comment-list">
+          {{range $k, $v := .Comment}}
+          <li>
+            <div class="comment-header">
+              <div class="comment-avatar"><img src="{{$v.Avatar}}" alt=""/></div>
+              <div class="comment-name">{{$v.NickName}}</div>
+              <div class="comment-thumb"><span onclick="goodnum(1)" id="">{{Addition $k 1}}</span></div>
+            </div>
+            <div class="comment-body">
+              {{$v.Content}}
+            </div>
+          </li>
+          {{end}}
+          <!--循环展示end-->
+        </ul>
+      </div>
+      <div class="page-end">
+        <a href="#" class="page-more">更多精彩评论，下载XXX APP</a>
+      </div>
+    </div>
+    <!--猜你喜欢-->
+    <div class="page-cells">
+      <div class="box-header">
+        <div class="box-tit">猜你喜欢</div>
+      </div>
+      <div class="media-scroll">
+        <ul class="media-scroll-list">
+          {{range $k, $v := .Likes}}
+          <li>
+            <div class="media-scbox">
+              <a href="{{$v.Link}}" class="scroll-pic">
+                <img src="{{$v.Cover}}" alt="{{$v.Title}}">
+                <div class="scroll-title">{{$v.Title}}</div>
+              </a>
+            </div>
+          </li>
+          {{end}}
+        </ul>
+      </div>
+    </div>
+  </div>
+{{end}}
+
+{{define "scripts"}}
+{{end}}
+

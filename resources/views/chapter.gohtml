@@ -1,0 +1,142 @@
+{{define "title"}}
+  {{.Book.Name}}-
+{{end}}
+
+{{define "keywords"}}
+  {{.Book.Keywords}}-
+{{end}}
+
+{{define "description"}}
+  {{.Book.Description}}-
+{{end}}
+{{define "hscripts"}}
+{{end}}
+
+{{define "main"}}
+  <header class="ui-header">
+    <div class="ui-icon-left">
+      <a href="javascript:history.back(-1)" class="ui-icon icon-back"></a>
+    </div>
+    <h1 class="ui-title">
+      <span class="filter-tit">1-100章</span>
+    </h1>
+    <div class="ui-icon-right">
+      <a href="javascript:" class="ui-icon icon-px"></a>
+    </div>
+    <!--章节选择-->
+    <div class="chapter-dropdown">
+      <ul>
+        {{range $k, $v := .Rolls}}
+        <li data-asc='{{$v.Asc}}' data-desc='{{$v.Desc}}'>{{$v.Name}}</li>
+        {{end}}
+      </ul>
+    </div>
+  </header>
+  <div class="weui-content">
+    <div class="weui_panel">
+      <ul class="chapter-list">
+
+      </ul>
+    </div>
+  </div>
+
+
+{{end}}
+
+{{define "scripts"}}
+  <script>
+    $('.filter-tit').click(function(){
+      $('.chapter-dropdown').slideToggle('fast');
+    })
+    $('.chapter-dropdown li').click(function(){
+      var txt = $(this).text();
+      $('.filter-tit').text(txt);
+      $('.chapter-dropdown').hide();
+    })
+    $(function(){
+      //页数
+      var page = 0;
+      var bookid ="{{.BookId}}";
+      var orderby = 'asc';
+
+      loadList(bookid,page,'asc');
+
+      function loadList(bookid,page,px){
+        $('.weui_panel').dropload({
+          scrollArea : window,
+          autoLoad : true,//自动加载
+          //上拉
+          domDown : {
+            domClass   : 'dropload-down',
+            domRefresh : '<div class="dropload-refresh f15 "><i class="icon icon-20"></i>请刷新页面</div>',
+            domLoad    : '<div class="dropload-load f15"><span class="weui-loading"></span>正在加载中...</div>',
+            domNoData  : '<div class="dropload-noData">没有更多数据了</div>'
+          },
+          //加载更多
+          loadDownFn : function(me){
+            page++;
+            var result = '';
+            $.ajax({
+              type: 'GET',
+              url:'/ajaxchapter?bookId='+bookid+'&page='+page+'&orderby='+px,
+              dataType: 'json',
+              success: function(data){
+                var arrLen = data.lists.length;
+                if(arrLen > 0){
+                  for(var i = 0; i < arrLen; i++){
+                    result += '  <li><a href="'+data.lists[i].Link+'"><div class="c-tit">'+data.lists[i].Title+'</div>';
+                    result += '<div class="zhs-ico"></div>';
+                    result += '</a></li>';
+                  }
+                  // 如果没有数据
+                }else{
+                  // 锁定
+                  me.lock();
+                  // 无数据
+                  me.noData();
+                }
+                // 为了测试，延迟1秒加载
+                setTimeout(function(){
+                  $('.chapter-list').append(result);
+                  // 每次数据加载完，必须重置
+                  me.resetload();
+                },0);
+              },
+              error: function(xhr, type){
+                alert('Ajax error!');
+                // 即使加载出错，也得重置
+                me.resetload();
+              }
+            });
+          }
+        });
+      }
+      //章节
+      $('.chapter-dropdown li').click(function(){
+        var txt = $(this).text();
+        var page  = $(this).attr('data-asc');
+        $('.filter-tit').text(txt);
+        $('.chapter-dropdown').hide();
+        $('.chapter-list').empty();
+        $('.weui_panel .dropload-down').remove();
+        loadList(bookid,page,'asc')
+      })
+      //排序
+      $('.icon-px').click(function(){
+        $('.chapter-list').empty();
+        $('.weui_panel .dropload-down').remove();
+        var asx = $('.chapter-dropdown li:last-child').text();
+        var page = $('.chapter-dropdown li:last-child').attr('data-desc');
+        $('.filter-tit').text(asx)
+        if(orderby == 'asc')
+          orderby = 'desc';
+        else
+          orderby = 'asc';
+
+        loadList(bookid,page, orderby);
+
+      })
+    });
+  </script>
+{{end}}
+

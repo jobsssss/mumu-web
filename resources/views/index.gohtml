@@ -1,0 +1,71 @@
+{{define "title"}}
+{{end}}
+
+{{define "keywords"}}
+{{end}}
+
+{{define "description"}}
+{{end}}
+
+{{define "hscripts"}}
+{{end}}
+
+{{define "main"}}
+  <div class="index-cells">
+      <!--搜索-->
+      <div class="index-sobar">
+          <div class="solinks">
+              <a href="{{"index"|RouteName2URL}}?g=1" class="grils {{if eq .g "1"}} active {{end}}">女生</a>
+              <a href="{{"index"|RouteName2URL}}?g=2" class="boys {{if eq .g "2"}} active {{end}}">男生</a>
+          </div>
+          <div class="index-search">
+            <label>
+              <input type="text" name="search" class="f-input" placeholder="输入书名/关键词" />
+            </label>
+          </div>
+      </div>
+  </div>
+
+  <!--小说精选-->
+  <div class="index-cells">
+      <div class="box-header">
+          <div class="box-tit">小说列表</div>
+          <a href="{{"all"|RouteName2URL}}?g={{.g}}" class="box-more">查看更多</a>
+      </div>
+      {{range $k, $v := .books}}
+      <div class="weui-panel__list">
+          <a href="/detail/{{$v.ID}}" class="weui-media-box weui-media-box_appmsg">
+          <div class="weui-media-box__hd">
+              <img class="weui-media-box__thumb" src="{{$v.Cover|OssUrl}}" alt="">
+          </div>
+          <div class="weui-media-box__bd">
+              <h4 class="weui-media-box__title">{{$v.Name}}</h4>
+              <div class="weui-media-box__desc">{{$v.Description}}</div>
+              <div class="weui-media-box__ft">
+                  <span class="box-cate">{{$v.Category.Title}} | {{if eq $v.Status 2}}完结{{end}} {{if eq $v.Status 1}}连载中{{end}}</span>
+                  <span class="box-click">总点击：{{$v.TotalViews}}</span>
+              </div>
+          </div>
+          </a>
+      </div>
+      {{end}}
+  </div>
+
+  <div class="wx-cells">
+{{/*      <img src="" alt="" />*/}}
+    <p><a target="_blank" href="https://beian.miit.gov.cn/#/Integrated/index">鄂ICP备2020014947号</a></p>
+    <p>酷看科技 </p>
+    <p>注：本站当前为开发测试网站，接入域名是为了方便技术测试，站点所有测试书籍均为不完整数据，如侵犯了您的合法权益，请发邮件：250476613@qq.com,我们立即删除 </p>
+  </div>
+{{end}}
+
+{{define "scripts"}}
+  <script>
+      $(function () {
+          $('.index-search').click(function(){
+              window.location.href="/search";
+          })
+      });
+  </script>
+{{end}}
+
