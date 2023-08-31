@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/spf13/cobra"
 	"mumu/app/cmd"
+	"mumu/app/cmd/make"
 	"mumu/bootstrap"
 	"mumu/config"
 	"mumu/pkg/console"
@@ -16,7 +17,7 @@ func init() {
 
 func main() {
 	var rootCmd = &cobra.Command{
-		Use:   "XX",
+		Use:   "mai",
 		Short: "Cli",
 		Long:  "Cli   asasasas",
 
@@ -39,6 +40,7 @@ func main() {
 		cmd.CmdKey,
 		cmd.CmdPlay,
 		cmd.CmdSearch,
+		make.CmdMake,
 	)
 
 	cmd.RegisterGlobalFlags(rootCmd)
